@@ -13,12 +13,10 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 
 public class PingEntityRenderer extends EntityRenderer<PingEntity> {
-    private static final ResourceLocation TEXTURE = new ResourceLocation(PingMod.MODID, "textures/entity/ping2.png");
 
     public PingEntityRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -32,16 +30,11 @@ public class PingEntityRenderer extends EntityRenderer<PingEntity> {
 
         Minecraft mc = Minecraft.getInstance();
         Vec3 playerPosition = mc.player.position();
-        Vec3 lookDirection = mc.player.getLookAngle();
 
         // Calculate direction from player to ping
         Vec3 pingPosition = entity.position();
-        Vec3 directionToPing = pingPosition.subtract(playerPosition).normalize();
 
         double distance = pingPosition.subtract(playerPosition).length();
-
-        // Calculate the angle between the look direction and the direction to the ping
-//        double angle = calculateFinalAngle(Minecraft.getInstance().player.getForward(), playerPosition, pingPosition);
 
         // ping -> player = player - ping
         Vec3 targetVec = playerPosition.subtract(pingPosition);
@@ -58,8 +51,6 @@ public class PingEntityRenderer extends EntityRenderer<PingEntity> {
         float size = 0.05f * (float) Math.pow(distance, 0.7);
         poseStack.scale(size, size, size);
 
-//        renderTexturedQuad(poseStack, vertexConsumer, 15728640);
-
         // render diamond
         renderDiamondOutline(poseStack, vertexConsumer, packedLight);
         renderTexturedDiamond(poseStack, vertexConsumer, packedLight);
@@ -75,6 +66,11 @@ public class PingEntityRenderer extends EntityRenderer<PingEntity> {
         super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
     }
 
+    @Override
+    public ResourceLocation getTextureLocation(PingEntity pingEntity) {
+        return null;
+    }
+
     private void renderDistanceText(PoseStack poseStack, MultiBufferSource bufferSource, PingEntity entity, double distance) {
         Minecraft mc = Minecraft.getInstance();
         String distanceText = String.format("%,.0f blocks", distance);
@@ -87,39 +83,6 @@ public class PingEntityRenderer extends EntityRenderer<PingEntity> {
         // Render the text
         Font.DisplayMode displayMode = Font.DisplayMode.SEE_THROUGH;
         font.drawInBatch(distanceText, 0, 0, 0xFFFFFF, false, poseStack.last().pose(), bufferSource, displayMode, 0, 15728880);
-    }
-
-    private void renderSimpleBox(PoseStack poseStack, VertexConsumer vertexConsumer, int light) {
-        // Vertex format: vertex(x, y, z, u, v, red, green, blue, alpha, overlay, light, normalX, normalY, normalZ)
-
-        float red = 0.0f, green = 1.0f, blue = 1.0f, alpha = 1f; // semi-transparent red
-        float black = 0.0f;
-        int overlay = OverlayTexture.NO_OVERLAY;
-
-        vertexConsumer.vertex(poseStack.last().pose(), -1, 0, 1).color(red, green, blue, alpha).uv(0, 0).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), 0, -1, 1).color(red, green, blue, alpha).uv(1, 0).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), 1, 0, 1).color(red, green, blue, alpha).uv(1, 1).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), 0, 1, 1).color(red, green, blue, alpha).uv(0, 1).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-
-        vertexConsumer.vertex(poseStack.last().pose(), -1, 0, 1).color(black, black, black, alpha).uv(0, 0).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), 0, -1, 1).color(black, black, black, alpha).uv(1, 0).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), 1, 0, 1).color(black, black, black, alpha).uv(1, 1).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), 0, 1, 1).color(black, black, black, alpha).uv(0, 1).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-
-    }
-
-    private void renderTexturedQuad(PoseStack poseStack, VertexConsumer vertexConsumer, int light) {
-        int overlay = OverlayTexture.NO_OVERLAY;
-
-        vertexConsumer.vertex(poseStack.last().pose(), -0.5f, -0.5f, 0).color(1.0f, 1.0f, 1.0f, 1.0f).uv(0, 0).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), 0.5f, -0.5f, 0).color(1.0f, 1.0f, 1.0f, 1.0f).uv(1, 0).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), 0.5f, 0.5f, 0).color(1.0f, 1.0f, 1.0f, 1.0f).uv(1, 1).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-        vertexConsumer.vertex(poseStack.last().pose(), -0.5f, 0.5f, 0).color(1.0f, 1.0f, 1.0f, 1.0f).uv(0, 1).overlayCoords(overlay).uv2(light).normal(0, 1, 0).endVertex();
-    }
-
-    @Override
-    public ResourceLocation getTextureLocation(PingEntity entity) {
-        return TEXTURE;
     }
 
     private void renderDiamondOutline(PoseStack poseStack, VertexConsumer vertexConsumer, int light) {
@@ -172,17 +135,5 @@ public class PingEntityRenderer extends EntityRenderer<PingEntity> {
                 .uv2(light)
                 .normal(0, 1, 0)
                 .endVertex();
-    }
-
-    private static double calculateFinalAngle(Vec3 playerForward, Vec3 playerPosition, Vec3 pingPosition) {
-        double playerAngle = Math.atan2(playerForward.x, playerForward.z) * 180 / Math.PI;
-
-        Vec2 targetVec = new Vec2((float) pingPosition.x, (float) pingPosition.z).add(new Vec2((float) playerPosition.x, (float) playerPosition.z).negated());
-
-        double enemyAngle = Math.atan2(targetVec.x, targetVec.y) * 180 / Math.PI;
-
-        double finalAngle = enemyAngle - playerAngle;
-
-        return -finalAngle;
     }
 }
