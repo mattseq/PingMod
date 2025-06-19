@@ -1,5 +1,6 @@
 package com.seq.pingmod.entity.client;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import com.seq.pingmod.PingMod;
 import com.seq.pingmod.entity.custom.PingEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -64,6 +65,7 @@ public class PingEntityRenderer extends EntityRenderer<PingEntity> {
         renderDistanceText(poseStack, bufferSource, entity, distance);
 
         poseStack.popPose();
+
         super.render(entity, entityYaw, partialTicks, poseStack, bufferSource, packedLight);
     }
 
@@ -77,13 +79,13 @@ public class PingEntityRenderer extends EntityRenderer<PingEntity> {
         poseStack.translate(-textWidth / 2.0, 0, 0);
 
         // Render the text
-        Font.DisplayMode displayMode = Font.DisplayMode.NORMAL;
+        Font.DisplayMode displayMode = Font.DisplayMode.SEE_THROUGH;
         font.drawInBatch(distanceText, 0, 0, 0xFFFFFF, false, poseStack.last().pose(), bufferSource, displayMode, 0, 15728880);
     }
 
     private void renderTexturedQuad(PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         int overlay = OverlayTexture.NO_OVERLAY;
-        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE)); // Use translucent for alpha
+        VertexConsumer vertexConsumer = bufferSource.getBuffer(RenderType.textSeeThrough(TEXTURE)); // Use translucent for alpha
 
         // Define the size of the quad
         float halfSize = 0.5f;
