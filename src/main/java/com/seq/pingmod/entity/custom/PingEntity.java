@@ -13,6 +13,7 @@ public class PingEntity extends Entity {
 
     public PingEntity(EntityType<? extends PingEntity> type, Level world) {
         super(type, world);
+        this.noPhysics = true;
     }
 
     @Override

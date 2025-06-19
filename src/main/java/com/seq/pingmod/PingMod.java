@@ -3,6 +3,7 @@ package com.seq.pingmod;
 import com.seq.pingmod.entity.ModEntities;
 import com.seq.pingmod.networking.PacketHandler;
 import com.mojang.logging.LogUtils;
+import com.seq.pingmod.sounds.ModSoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -28,6 +29,7 @@ public class PingMod
         IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
         ModEntities.REGISTRY.register(modEventBus);
+        ModSoundEvents.register(modEventBus);
 
         modEventBus.addListener(this::commonSetup);
 

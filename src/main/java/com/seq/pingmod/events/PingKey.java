@@ -4,10 +4,13 @@ import com.seq.pingmod.PingMod;
 import com.seq.pingmod.ModKeyBindings;
 import com.seq.pingmod.networking.PacketHandler;
 import com.seq.pingmod.networking.PingC2SPacket;
+import com.seq.pingmod.sounds.ModSoundEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
@@ -27,9 +30,9 @@ public class PingKey {
     public static void onClientTick(TickEvent.ClientTickEvent event) {
         Minecraft mc = Minecraft.getInstance();
         if (mc.player != null && ModKeyBindings.PING_KEY.consumeClick()) {
-
-            Vec3 targetPos = getTargetPos(mc.player, mc.player.level(), 100);
-
+            Player player = mc.player;
+            Vec3 targetPos = getTargetPos(mc.player, player.level(), 100);
+            player.level().playSound(player, player.blockPosition(), ModSoundEvents.PING.get(), SoundSource.PLAYERS, .35f, 1);
             PacketHandler.sendToServer(new PingC2SPacket(targetPos.x, targetPos.y, targetPos.z));
         }
     }

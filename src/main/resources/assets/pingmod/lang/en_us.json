@@ -1,4 +1,6 @@
 {
   "key.ping": "Ping",
-  "key.categories.pingmod": "Ping Mod"
+  "key.categories.pingmod": "Ping Mod",
+  "sounds.pingmod.ping": "Ping",
+  "entity.pingmod.ping_entity": "Ping"
 }
